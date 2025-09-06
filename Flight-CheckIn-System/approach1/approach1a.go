@@ -35,9 +35,49 @@ func resetDB() {
 	}
 }
 
+func printSeats() {
+	fmt.Println("Current seats layout (5x5):")
+
+	// query all seats ordered by seat_id
+	rows, err := db.Query("SELECT seat_id, user_id FROM seats ORDER BY seat_id")
+	if err != nil {
+		log.Fatal("Failed to query seats: ", err)
+	}
+	defer rows.Close()
+
+	seats := make([]int, 0, 20) // store user_id; 0 means empty
+	for rows.Next() {
+		var seatID, userID sql.NullInt32
+		err := rows.Scan(&seatID, &userID)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if userID.Valid {
+			seats = append(seats, int(userID.Int32))
+		} else {
+			seats = append(seats, 0)
+		}
+	}
+
+	// print as 5x5 grid
+	for i := 0; i < 20; i++ {
+		if seats[i] == 0 {
+			fmt.Print(". ")
+		} else {
+			fmt.Print("x ")
+		}
+
+		if (i+1)%5 == 0 {
+			fmt.Println()
+		}
+	}
+}
+
+
 func main() {
 	initDB()
-	resetDB()
+	// resetDB()
 	fmt.Println("Enter  user id for whom you want to book a seat:")
 
 	var userId int
@@ -49,6 +89,7 @@ func main() {
 
 	fmt.Printf("User ID: %d, Seat Number: %d\n", userId, seatNumber)
 	bookSeat(userId, seatNumber)
+	printSeats()
 }
 
 func bookSeat(userId int, seatNumber int) {
