@@ -36,7 +36,7 @@ func resetDB() {
 }
 
 func printSeats() {
-	fmt.Println("Current seats layout (5x5):")
+	fmt.Println("Current seats layout (5x4):")
 
 	// query all seats ordered by seat_id
 	rows, err := db.Query("SELECT seat_id, user_id FROM seats ORDER BY seat_id")
