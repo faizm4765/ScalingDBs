@@ -1,2 +1,2 @@
-Below screenshot shows, how multiple users got same seat on the flight
-![alt text](image.png)
+Below screenshot shows, how multiple users got same seat on the flight. For example, seat 5 is booked by three users.
+![alt text](image-1.png)

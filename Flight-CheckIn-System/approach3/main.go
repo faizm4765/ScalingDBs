@@ -42,46 +42,6 @@ func resetDB() {
 	}
 }
 
-func printSeats() {
-	fmt.Println("Current seats layout (5x4):")
-
-	// query all seats ordered by seat_id
-	rows, err := db.Query("SELECT seat_id, user_id FROM seats ORDER BY seat_id")
-	if err != nil {
-		log.Fatal("Failed to query seats: ", err)
-	}
-	defer rows.Close()
-
-	seats := make([]int, 0, 20) // store user_id; 0 means empty
-	for rows.Next() {
-		var seatID, userID sql.NullInt32
-		err := rows.Scan(&seatID, &userID)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if userID.Valid {
-			seats = append(seats, int(userID.Int32))
-		} else {
-			seats = append(seats, 0)
-		}
-	}
-
-	// print as 5x5 grid
-	for i := 0; i < 20; i++ {
-		if seats[i] == 0 {
-			fmt.Print(". ")
-		} else {
-			fmt.Print("x ")
-		}
-
-		if (i+1)%5 == 0 {
-			fmt.Println()
-		}
-	}
-}
-
-
 func main() {
 	initDB()
 	resetDB()
@@ -139,6 +99,45 @@ func bookSeat(user User) error {
 	return nil
 }
 
+func printSeats() {
+	fmt.Println("Current seats layout (5x4):")
+
+	// query all seats ordered by seat_id
+	rows, err := db.Query("SELECT seat_id, user_id FROM seats ORDER BY seat_id")
+	if err != nil {
+		log.Fatal("Failed to query seats: ", err)
+	}
+	defer rows.Close()
+
+	seats := make([]int, 0, 20) // store user_id; 0 means empty
+	for rows.Next() {
+		var seatID, userID sql.NullInt32
+		err := rows.Scan(&seatID, &userID)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if userID.Valid {
+			seats = append(seats, int(userID.Int32))
+		} else {
+			seats = append(seats, 0)
+		}
+	}
+
+	// print as 5x10 grid
+	for i := 0; i < 50; i++ {
+		if seats[i] == 0 {
+			fmt.Print(". ")
+		} else {
+			fmt.Print("x ")
+		}
+
+		if (i+1)%5 == 0 {
+			fmt.Println()
+		}
+	}
+}
+
 func fetchAllUsers() []User {
 	users := make([]User, 0)
 	rows, err := db.Query("SELECT user_id, user_name FROM users")
@@ -187,3 +186,4 @@ func selectRandomSeat(allSeats []int) int {
 	// Select a random seat from the available seats
 	return allSeats[rand.Intn(len(allSeats))]
 }
+
