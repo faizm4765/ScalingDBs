@@ -24,7 +24,7 @@ func initDB() {
 			log.Fatal("Database is unreachable: ", err)
 		}
 
-		log.Println("Database connection established successfully")
+		// log.Println("Database connection established successfully")
 	}
 }
 
@@ -79,7 +79,7 @@ func printSeats() {
 func main() {
 	initDB()
 	// resetDB()
-	fmt.Println("Enter  user id for whom you want to book a seat:")
+	fmt.Println("Enter user id for whom you want to book a seat:")
 
 	var userId int
 	fmt.Scanln(&userId)
@@ -121,6 +121,9 @@ func bookSeat(userId int) {
 		log.Fatal("Failed to commit transaction: ", err)
 		return
 	}
+
+	//  print this log in green
+	fmt.Printf("\033[32mSeat %d booked for user %s\n\033[0m", seatNumber, userName)
 }
 
 func fetchUserName(userId int) string {
