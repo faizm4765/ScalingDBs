@@ -1,12 +1,14 @@
--- ========================================
--- 1️⃣ Create users table and populate 50 users
--- ========================================
+-- 1️⃣ Drop old tables (if they exist)
+DROP TABLE IF EXISTS seats;
+DROP TABLE IF EXISTS users;
 
+-- 2️⃣ Create users table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     user_name VARCHAR(50) NOT NULL
 );
 
+-- 3️⃣ Insert 50 distinct users
 INSERT INTO users (user_name) VALUES
 ('Alice Johnson'),
 ('Bob Smith'),
@@ -59,29 +61,17 @@ INSERT INTO users (user_name) VALUES
 ('Walter Morris'),
 ('Ximena Rogers');
 
--- ========================================
--- 2️⃣ Create seats table
--- ========================================
-
+-- 4️⃣ Create seats table
 CREATE TABLE seats (
     seat_id SERIAL PRIMARY KEY,
     seat_number INT UNIQUE,
-    user_id INT REFERENCES users(user_id)  -- nullable, initially empty
+    user_id INT REFERENCES users(user_id)  -- nullable, since not booked yet
 );
 
--- ========================================
--- 3️⃣ Populate seats table with 20 empty seats
--- ========================================
-
+-- 5️⃣ Insert 50 empty seats
 INSERT INTO seats (seat_number, user_id)
-SELECT generate_series(1, 20), NULL;
+SELECT generate_series(1, 50), NULL;
 
--- ========================================
--- 4️⃣ Verify tables
--- ========================================
-
--- Check users
-SELECT * FROM users;
-
--- Check seats
-SELECT * FROM seats;
+-- ✅ Verification
+SELECT COUNT(*) AS total_users FROM users;
+SELECT COUNT(*) AS total_seats FROM seats;
