@@ -89,7 +89,13 @@ func main() {
 }
 
 func bookSeat(userId int) {
-	fmt.Printf("Booking seat for user %d\n", userId)
+	userName := fetchUserName(userId)
+	if userName == "" {
+		log.Println("User not found")
+		return
+	}
+
+	fmt.Printf("Booking seat for user %s\n", userName)
 
 	// begin transaction
 	tx, err := db.Begin()
@@ -117,6 +123,16 @@ func bookSeat(userId int) {
 	}
 }
 
+func fetchUserName(userId int) string {
+	var userName string
+	err := db.QueryRow("SELECT user_name FROM users WHERE user_id = $1", userId).Scan(&userName)
+	if err != nil {
+		log.Fatal("Failed to fetch user name: ", err)
+		return ""
+	}
+
+	return userName
+}
 
 func fetchAllSeats() []int {
 	seats := make([]int, 0)
